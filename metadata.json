@@ -1,0 +1,5 @@
+{
+  "name": "Spotify Intelligence",
+  "description": "An AI-powered interface for your Spotify account. Ask questions about your listening habits and create playlists with natural language.",
+  "requestFramePermissions": []
+}
