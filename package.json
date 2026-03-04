@@ -11,7 +11,7 @@
     "clean": "rm -rf dist",
     "lint": "tsc --noEmit",
     "predeploy": "npm run build",
-    "deploy": "gh-pages -d dist"
+    "deploy": "gh-pages -d dist --repo https://github.com/closezad/Spotify-Intelligence.git"
   },
   "dependencies": {
     "@anthropic-ai/claude-agent-sdk": "^0.2.63",
