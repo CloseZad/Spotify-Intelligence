@@ -8,6 +8,7 @@ import fs from "fs";
 import { fileURLToPath } from "url";
 // import { groqService } from "./src/services/groqService.ts";
 import { claudeService } from "./src/services/claudeService.ts";
+import cors from "cors";
 
 dotenv.config();
 
@@ -15,6 +16,12 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 const app = express();
+app.use(
+  cors({
+    origin: "https://closezad.github.io/Spotify-Intelligence/", // Replace with your exact GitHub Pages URL
+    credentials: true, // Crucial for passing the Spotify auth cookies/sessions
+  })
+);
 const PORT = 3000;
 
 // Required for secure cookies behind a proxy

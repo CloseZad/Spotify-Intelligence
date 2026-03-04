@@ -36,6 +36,11 @@ export default function App() {
   const [redirectUri, setRedirectUri] = useState<string>("");
   const chatEndRef = useRef<HTMLDivElement>(null);
 
+  const API_BASE_URL =
+    import.meta.env.MODE === "production"
+      ? "https://spotify-intelligence.onrender.com" // <-- PUT YOUR ACTUAL RENDER URL HERE
+      : "";
+
   useEffect(() => {
     checkAuth();
     fetchRedirectUri();
@@ -43,7 +48,7 @@ export default function App() {
 
   const fetchRedirectUri = async () => {
     try {
-      const response = await fetch("/api/auth/url");
+      const response = await fetch("${API_BASE_URL}/api/auth/url");
       const data = await response.json();
       setRedirectUri(data.redirectUri);
     } catch (e) {
@@ -95,7 +100,7 @@ export default function App() {
     setIsLoading(true);
 
     try {
-      const result = await fetch("/api/chat", {
+      const result = await fetch("${API_BASE_URL}/api/chat", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ message: userMsg, history }),
