@@ -1,6 +1,6 @@
 const API_BASE_URL =
   import.meta.env.MODE === "production"
-    ? "https://your-render-app-name.onrender.com" // <-- Replace with your Render URL
+    ? "https://spotify-intelligence.onrender.com"
     : "http://127.0.0.1:3000";
 
 export interface SpotifyTrack {
