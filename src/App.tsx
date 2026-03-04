@@ -38,7 +38,7 @@ export default function App() {
 
   const API_BASE_URL =
     import.meta.env.MODE === "production"
-      ? "https://spotify-intelligence.onrender.com" // <-- PUT YOUR ACTUAL RENDER URL HERE
+      ? "https://spotify-intelligence.onrender.com"
       : "";
 
   useEffect(() => {

@@ -18,7 +18,7 @@ const __dirname = path.dirname(__filename);
 const app = express();
 app.use(
   cors({
-    origin: "https://closezad.github.io/Spotify-Intelligence/", // Replace with your exact GitHub Pages URL
+    origin: "https://closezad.github.io",
     credentials: true, // Crucial for passing the Spotify auth cookies/sessions
   })
 );
