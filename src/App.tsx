@@ -70,9 +70,26 @@ export default function App() {
   };
 
   const handleConnect = async () => {
-    const url = await spotifyService.getAuthUrl();
-    const authWindow = window.open(url, "spotify_auth", "width=600,height=700");
+    // 1. Open a blank window IMMEDIATELY on tap.
+    // Mobile browsers allow this because it's a direct response to a physical touch.
+    const authWindow = window.open("", "spotify_auth", "width=600,height=700");
 
+    try {
+      // 2. Fetch the auth URL from your Render backend while the blank tab sits there
+      const url = await spotifyService.getAuthUrl();
+
+      // 3. Redirect the already-approved tab to the Spotify login page
+      if (authWindow) {
+        authWindow.location.href = url;
+      }
+    } catch (error) {
+      // If the backend is asleep or fails, close the blank tab so the user isn't stuck
+      if (authWindow) authWindow.close();
+      console.error("Failed to fetch auth URL:", error);
+      return; // Stop execution
+    }
+
+    // 4. Wait for the success message from the backend (This part stays exactly the same)
     const handleMessage = (event: MessageEvent) => {
       if (event.data?.type === "OAUTH_AUTH_SUCCESS") {
         checkAuth();
