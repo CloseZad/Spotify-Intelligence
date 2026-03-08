@@ -7,7 +7,8 @@ import path from "path";
 import fs from "fs";
 import { fileURLToPath } from "url";
 // import { groqService } from "./src/services/groqService.ts";
-import { claudeService } from "./src/services/claudeService.ts";
+import { claudeService } from "./src/services/claudeService";
+import { geminiService } from "./src/services/geminiService.ts";
 import cors from "cors";
 
 dotenv.config();
@@ -144,7 +145,8 @@ app.post("/api/auth/logout", (req, res) => {
 // ==========================================
 
 app.post("/api/chat", async (req, res) => {
-  const { message, history = [] } = req.body;
+  // Extract the chosen model, defaulting to claude if none is provided
+  const { message, history = [], model = "claude" } = req.body;
 
   if (!globalAccessToken) {
     return res
@@ -157,12 +159,17 @@ app.post("/api/chat", async (req, res) => {
   }
 
   try {
-    console.log("Agent received message:", message);
+    console.log(`Agent received message (Model: ${model}):`, message);
 
-    // Pass the message and history array to our Groq service
-    const result = await claudeService.chat(message, history);
+    let result;
 
-    // Send back the AI's text AND the updated history array
+    // Route to the correct AI
+    if (model === "gemini") {
+      result = await geminiService.chat(message, history);
+    } else {
+      result = await claudeService.chat(message, history);
+    }
+
     res.json({
       reply: result.text,
       history: result.history,

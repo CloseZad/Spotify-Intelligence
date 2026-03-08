@@ -35,6 +35,7 @@ export default function App() {
   const [history, setHistory] = useState<any[]>([]);
   const [redirectUri, setRedirectUri] = useState<string>("");
   const chatEndRef = useRef<HTMLDivElement>(null);
+  const [activeModel, setActiveModel] = useState<"claude" | "gemini">("claude");
 
   const API_BASE_URL =
     import.meta.env.MODE === "production"
@@ -45,6 +46,13 @@ export default function App() {
     checkAuth();
     fetchRedirectUri();
   }, []);
+
+  const handleModelSwitch = (newModel: "claude" | "gemini") => {
+    if (newModel === activeModel) return;
+    setActiveModel(newModel);
+    setHistory([]);
+    setMessages([]); // Clears the UI since they are starting a fresh context
+  };
 
   const fetchRedirectUri = async () => {
     try {
@@ -120,7 +128,7 @@ export default function App() {
       const result = await fetch(`${API_BASE_URL}/api/chat`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ message: userMsg, history }),
+        body: JSON.stringify({ message: userMsg, history, model: activeModel }),
       }).then((res) => res.json());
 
       setMessages((prev) => [
@@ -203,7 +211,7 @@ export default function App() {
   }
 
   return (
-    <div className="min-h-screen bg-[#0a0a0a] text-zinc-100 flex overflow-hidden">
+    <div className="h-[100dvh] bg-[#0a0a0a] text-zinc-100 flex overflow-hidden">
       {/* Sidebar */}
       <aside className="w-72 border-r border-zinc-800/50 bg-zinc-900/30 flex-col hidden md:flex">
         <div className="p-6 flex items-center gap-3">
@@ -255,19 +263,42 @@ export default function App() {
       </aside>
 
       {/* Main Content */}
-      <main className="flex-1 flex flex-col relative">
+      <main className="flex-1 flex flex-col relative h-full overflow-hidden">
         {/* Header */}
         <header className="h-16 border-b border-zinc-800/50 flex items-center justify-between px-6 bg-[#0a0a0a]/80 backdrop-blur-md sticky top-0 z-10">
           <div className="flex items-center gap-2">
-            {/* <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" /> */}
-            <div className="w-2 h-2 rounded-full bg-red-500 animate-pulse" />
-
-            {/* <span className="text-sm font-medium text-zinc-400">
-              AI System Active
-            </span> */}
+            <div
+              className={`w-2 h-2 rounded-full animate-pulse ${
+                activeModel === "gemini" ? "bg-emerald-500" : "bg-red-500"
+              }`}
+            />
             <span className="text-sm font-medium text-zinc-400">
-              AI System Inactive
+              {activeModel === "gemini"
+                ? "AI System Active"
+                : "AI System Inactive"}
             </span>
+          </div>
+          <div className="flex items-center gap-2 bg-zinc-900 rounded-lg p-1 border border-zinc-800">
+            <button
+              onClick={() => handleModelSwitch("claude")}
+              className={`px-3 py-1 text-xs font-bold rounded-md transition-all ${
+                activeModel === "claude"
+                  ? "bg-emerald-500 text-black"
+                  : "text-zinc-500 hover:text-zinc-300"
+              }`}
+            >
+              Claude
+            </button>
+            <button
+              onClick={() => handleModelSwitch("gemini")}
+              className={`px-3 py-1 text-xs font-bold rounded-md transition-all ${
+                activeModel === "gemini"
+                  ? "bg-emerald-500 text-black"
+                  : "text-zinc-500 hover:text-zinc-300"
+              }`}
+            >
+              Gemini
+            </button>
           </div>
           <div className="flex items-center gap-4">
             <button className="p-2 text-zinc-400 hover:text-white transition-colors">
