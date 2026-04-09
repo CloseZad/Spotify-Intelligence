@@ -19,7 +19,7 @@ const __dirname = path.dirname(__filename);
 const app = express();
 app.use(
   cors({
-    origin: "https://closezad.github.io",
+    origin: "https://closezad.design",
     credentials: true, // Crucial for passing the Spotify auth cookies/sessions
   })
 );
